@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { selectReddit, fetchPostsIfNeeded, invalidateReddit } from '../actions'
+import { selectBookManifest, fetchPostsIfNeeded, invalidateBookManifest } from '../actions'
 import Picker from '../components/Picker'
 import Posts from '../components/Posts'
 
@@ -15,7 +15,7 @@ const cachedIcon = <FontIcon className="material-icons">cached</FontIcon>;
 
 class App extends Component {
   static propTypes = {
-    selectedReddit: PropTypes.string.isRequired,
+    selectedBookManifest: PropTypes.string.isRequired,
     posts: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.number,
@@ -30,27 +30,27 @@ class App extends Component {
 }
 
   componentDidMount() {
-    const { dispatch, selectedReddit } = this.props
-    dispatch(fetchPostsIfNeeded(selectedReddit))
+    const { dispatch, selectedBookManifest } = this.props
+    dispatch(fetchPostsIfNeeded(selectedBookManifest))
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedReddit !== this.props.selectedReddit) {
-      const { dispatch, selectedReddit } = nextProps
-      dispatch(fetchPostsIfNeeded(selectedReddit))
+    if (nextProps.selectedBookManifest !== this.props.selectedBookManifest) {
+      const { dispatch, selectedBookManifest } = nextProps
+      dispatch(fetchPostsIfNeeded(selectedBookManifest))
     }
   }
 
-  handleChange = nextReddit => {
-    this.props.dispatch(selectReddit(nextReddit))
+  handleChange = nextBookManifest => {
+    this.props.dispatch(selectBookManifest(nextBookManifest))
   }
 
   handleRefreshClick = e => {
     e.preventDefault()
 
-    const { dispatch, selectedReddit } = this.props
-    dispatch(invalidateReddit(selectedReddit))
-    dispatch(fetchPostsIfNeeded(selectedReddit))
+    const { dispatch, selectedBookManifest } = this.props
+    dispatch(invalidateBookManifest(selectedBookManifest))
+    dispatch(fetchPostsIfNeeded(selectedBookManifest))
   }
 
   handleDrawerToggle = () => {
@@ -58,12 +58,12 @@ class App extends Component {
   }
 
   render() {
-    const { selectedReddit, posts, isFetching, lastUpdated } = this.props
+    const { selectedBookManifest, posts, isFetching, lastUpdated } = this.props
     const isEmpty = posts.length === 0
     return (
     <div>
       <Paper>
-        <Picker value={selectedReddit}
+        <Picker value={selectedBookManifest}
                 onClick={this.handleChange}
                 options={[ 'shakespeare', 'dickens', 'hemingway' ]}
                 />
@@ -96,19 +96,19 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { selectedReddit, postsByReddit } = state
+  const { selectedBookManifest, postsByBookManifest } = state
   const {
     isFetching,
     lastUpdated,
     items: posts
-  } = postsByReddit[selectedReddit] || {
+  } = postsByBookManifest[selectedBookManifest] || {
     isFetching: true,
     isDrawerOpen: true,
     items: []
   }
 
   return {
-    selectedReddit,
+    selectedBookManifest,
     posts,
     isFetching,
     lastUpdated

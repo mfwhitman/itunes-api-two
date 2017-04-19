@@ -2,45 +2,45 @@ import fetchJsonp from 'fetch-jsonp'
 
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
-export const SELECT_REDDIT = 'SELECT_REDDIT'
-export const INVALIDATE_REDDIT = 'INVALIDATE_REDDIT'
+export const SELECT_BOOKMANIFEST = 'SELECT_BOOKMANIFEST'
+export const INVALIDATE_BOOKMANIFEST = 'INVALIDATE_BOOKMANIFEST'
 
-export const selectReddit = reddit => ({
-  type: SELECT_REDDIT,
-  reddit
+export const selectBookManifest = bookmanifest => ({
+  type: SELECT_BOOKMANIFEST,
+  bookmanifest
 })
 
-export const invalidateReddit = reddit => ({
-  type: INVALIDATE_REDDIT,
-  reddit
+export const invalidateBookManifest = bookmanifest => ({
+  type: INVALIDATE_BOOKMANIFEST,
+  bookmanifest
 })
 
-export const requestPosts = reddit => ({
+export const requestPosts = bookmanifest => ({
   type: REQUEST_POSTS,
-  reddit
+  bookmanifest
 })
 
-export const receivePosts = (reddit, json) => ({
+export const receivePosts = (bookmanifest, json) => ({
   type: RECEIVE_POSTS,
-  reddit,
+  bookmanifest,
   posts: json.results,
   receivedAt: Date.now()
 })
 
-const fetchPosts = reddit => dispatch => {
-  dispatch(requestPosts(reddit))
+const fetchPosts = bookmanifest => dispatch => {
+  dispatch(requestPosts(bookmanifest))
   let settings = {
       mode: 'cors',
       dataType: 'jsonp',
     }
-  return fetchJsonp(`https://itunes.apple.com/search?country=gb&term=${reddit}&media=ebook&limit=10`, settings)
+  return fetchJsonp(`https://itunes.apple.com/search?country=gb&term=${bookmanifest}&media=ebook&limit=10`, settings)
       
     .then(response => response.json())
-    .then(json => dispatch(receivePosts(reddit, json)))
+    .then(json => dispatch(receivePosts(bookmanifest, json)))
 }
 
-const shouldFetchPosts = (state, reddit) => {
-  const posts = state.postsByReddit[reddit]
+const shouldFetchPosts = (state, bookmanifest) => {
+  const posts = state.postsByBookManifest[bookmanifest]
   if (!posts) {
     return true
   }
@@ -50,8 +50,8 @@ const shouldFetchPosts = (state, reddit) => {
   return posts.didInvalidate
 }
 
-export const fetchPostsIfNeeded = reddit => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), reddit)) {
-    return dispatch(fetchPosts(reddit))
+export const fetchPostsIfNeeded = bookmanifest => (dispatch, getState) => {
+  if (shouldFetchPosts(getState(), bookmanifest)) {
+    return dispatch(fetchPosts(bookmanifest))
   }
 }
